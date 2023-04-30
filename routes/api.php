@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,8 +16,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-Route::apiResource("contacts",ContactController::class);
+Route::middleware('auth:sanctum')->group(
+    function () {
 
+Route::apiResource("contacts",ContactController::class);
+Route::get('/profile', [UserController::class, "profile"]);
+Route::get('/logout', [UserController::class, "logout"]);
+
+        }
+    );
+
+Route::prefix('users')->group(function () {
+    Route::post('/register', [UserController::class,"register"])->name("register");
+    Route::post('/login', [UserController::class,"login"])->name("login");
+});
